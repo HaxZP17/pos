@@ -1,0 +1,739 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Point of Sale System</title>
+	
+    <style>
+	 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
+
+body {
+  font-family: 'Roboto', Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+.background {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url("images/bg.jpg");
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+  opacity: 100;
+  z-index: -1;
+  animation: animateBackground 60s linear infinite;
+}
+
+@keyframes animateBackground {
+      0% {
+        background-position: 0 0;
+      }
+      100% {
+        background-position: 100% 100%;
+      }
+    }
+
+.container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: rgba(255, 255, 255, 0.8);
+}
+
+h1 {
+  text-align: center;
+  font-size: 32px;
+  margin: 40px 0;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: #333;
+}
+
+.content {
+  display: flex;
+  justify-content: space-between;
+}
+
+.products {
+  flex-basis: 70%;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  padding: 20px;
+  box-sizing: border-box;
+  overflow: hidden; /* Hide overflowing content */
+}
+
+.cart {
+  flex-basis: 30%;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  padding: 20px;
+  box-sizing: border-box;
+  overflow: hidden; /* Hide overflowing content */ 
+}
+
+.products h2,
+.cart h2 {
+  text-align: center;
+}
+
+.product-grid {
+  display: flex;
+  flex-wrap: nowrap;
+  overflow-x: auto; /* Enable horizontal scrolling */
+}
+
+.product {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px;
+  text-align: center;
+  flex: 0 0 100px; /* Set a fixed width for each product item */
+  margin-right: 10px;
+}
+
+.product img {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 1/1;
+  margin-bottom: 10px;
+}
+
+.product-name {
+  font-weight: bold;
+}
+
+.add-to-cart {
+  background-color: #4caf50;
+  color: #fff;
+  border: none;
+  border-radius: 3px;
+  padding: 5px 10px;
+  cursor: pointer;
+}
+
+.add-to-cart:hover {
+  background-color: #45a049;
+}
+
+#total {
+  font-weight: bold;
+  margin-top: 10px;
+  text-align: right;
+}
+
+#payment {
+  margin-top: 20px;
+  text-align: center;
+}
+
+#customer-money {
+  padding: 2px;
+  margin-right: 10px;
+  height: 30px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+#calculate-change {
+  margin-top: 20px;
+  background-color: #4caf50;
+  color: #fff;
+  border: none;
+  border-radius: 3px;
+  padding: 5px 10px;
+  cursor: pointer;
+}
+
+#calculate-change:hover {
+  background-color: #45a049;
+}
+
+#change-label {
+  font-weight: bold;
+  margin-top: 10px;
+  text-align: center;
+}
+
+#search-input {
+  display: block;
+  margin: 0 auto;
+  width: 200px;
+  padding: 5px;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+  font-size: 16px;
+  text-align: center;
+  height: 30px;
+}
+
+.payment-history-container {
+  max-width: 400px;
+  margin: 20px auto;
+  padding: 10px;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.payment-history-container h3 {
+  text-align: center;
+}
+
+.payment-history-container p {
+  text-align: center;
+  color: #000;
+}
+
+.payment-history-container ul {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+.payment-history-container li {
+  margin-bottom: 10px;
+  border-bottom: 1px solid #ccc;
+  padding-bottom: 5px;
+}
+
+.payment-history-button {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.payment-history-button button {
+  background-color: #2196f3;
+  color: #fff;
+  border: none;
+  border-radius: 3px;
+  padding: 5px 10px;
+  cursor: pointer;
+}
+
+.payment-history-button button:hover {
+  background-color: #1976d2;
+}
+
+.new-transaction-button {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.new-transaction-button button {
+  background-color: #f44336;
+  color: #fff;
+  border: none;
+  border-radius: 3px;
+  padding: 5px 10px;
+  cursor: pointer;
+}
+
+.new-transaction-button button:hover {
+  background-color: #d32f2f;
+}
+
+.edit-price {
+  background-color: #2196f3;
+  color: #fff;
+  border: none;
+  border-radius: 3px;
+  padding: 5px 5px;
+  cursor: pointer;
+}
+
+.edit-price:hover {
+  background-color: #1976d2;
+}
+
+.menu-mode-button {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+  margin-bottom: 20px;
+  margin-right: 0px;
+}
+
+.menu-mode-button a {
+  background-color: #2196f3;
+  color: #fff;
+  border: none;
+  border-radius: 3px;
+  padding: 10px 20px;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.menu-mode-button a:hover {
+  background-color: #1976d2;
+}
+
+.print-button button {
+  background-color: #4caf50;
+  color: #fff;
+  justify-content: center;
+  padding: 5px 10px;
+  cursor: pointer;
+  margin-top: 20px;
+}
+
+    </style>
+</head>
+<body>
+    <div class="background"></div>
+    <div class="container">
+        <h1>Point of Sale System</h1>
+        <div class="products">
+          <h2>Products</h2>
+          <input type="text" id="search-input" placeholder="Search product...">
+          <div class="product-grid">
+              <div class="product">
+                  <img src="images/burger.png" alt="Product 1">
+                  <span class="product-name">Hamburger</span>
+                  <span class="product-price">₱<span id="1">40.58</span></span>
+                  <button class="add-to-cart">Add to Cart</button>
+                  <button class="edit-price">Edit</button>
+              </div>
+              <div class="product">
+                  <img src="images/coke.png" alt="Product 2">
+                  <span class="product-name">Coke</span>
+                  <span class="product-price">₱<span id="2">28.78</span></span>
+                  <button class="add-to-cart">Add to Cart</button>
+                  <button class="edit-price">Edit</button>
+              </div>
+
+              <div class="product">
+                  <img src="images/fries.png" alt="Product 3">
+                  <span class="product-name">Fries</span>
+                  <span class="product-price">₱<span id="3">35.60</span></span>
+                  <button class="add-to-cart">Add to Cart</button>
+                  <button class="edit-price">Edit</button>
+              </div>
+
+              <div class="product">
+                  <img src="images/sizzling.png" alt="Product 4">
+                  <span class="product-name">Sisig</span>
+                  <span class="product-price">₱<span id="4">75.99</span></span>
+                  <button class="add-to-cart">Add to Cart</button>
+                  <button class="edit-price">Edit</button>
+              </div>
+
+              <div class="product">
+                  <img src="images/adobo.png" alt="Product 5">
+                  <span class="product-name">Adobo</span>
+                  <span class="product-price">₱<span id="5">80.90</span></span>
+                  <button class="add-to-cart">Add to Cart</button>
+                  <button class="edit-price">Edit</button>
+              </div>
+
+              <div class="product">
+                  <img src="images/pizza.png" alt="Product 6">
+                  <span class="product-name">Pizza</span>
+                  <span class="product-price">₱<span id="6"></span></span>
+                  <button class="add-to-cart">Add to Cart</button>
+                  <button class="edit-price">Edit</button>
+              </div>
+            </div>
+
+            <div class="cart">
+                <h2>Cart</h2>
+                <ul id="cart-items"></ul>
+                <div id="total">Total: ₱<span id="cart-total">0</span></div>
+                <div id="payment">
+                    <label for="customer-money">Customer Money:</label>
+                    <input type="number" id="customer-money">
+                    <button id="calculate-change">Calculate Change</button>
+                    <div id="change-label">Change: </div>
+                    <div class="new-transaction-button">
+                        <button id="new-transaction-button">New Transaction</button>
+                    </div>
+
+                    <div class="payment-history-button">
+                        <button id="payment-history-button">Payment History</button>
+                    </div>
+                    <div class="close-button">
+                      <button id="close-button">close</button>
+                    </div>
+
+		    <div class="print-button">
+ 		       <button id="print-button">Print Receipt</button>
+		    </div>
+		    
+		    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<script>
+    
+    document.addEventListener("DOMContentLoaded", function () {
+  const addToCartButtons = document.querySelectorAll(".add-to-cart");
+  const cartItems = document.getElementById("cart-items");
+  const cartTotal = document.getElementById("cart-total");
+  const newTransactionButton = document.getElementById("new-transaction-button");
+  const customerMoneyInput = document.getElementById("customer-money");
+  const calculateChangeButton = document.getElementById("calculate-change");
+  const changeLabel = document.getElementById("change-label");
+  const paymentH = document.getElementById("payment-history-button");
+  const printButton = document.querySelector(".print-button");
+  const searchInput = document.getElementById("search-input");
+  const editButtons = document.querySelectorAll(".edit-button");
+
+ // Array of products
+let products = [
+  { id: 1, name: 'Hamburger', price: 40.58 },
+  { id: 2, name: 'Coke', price: 28.78 },
+  { id: 3, name: 'Fries', price: 35.60 },
+  { id: 4, name: 'Sisig', price: 75.99 },
+  { id: 5, name: 'Adobo', price: 80.90 },
+  { id: 6, name: 'Pizza', price: 280.30 }
+];
+
+  const savedProducts = localStorage.getItem("products");
+  const productsArray = savedProducts ? JSON.parse(savedProducts) : [];
+  
+  let cart = [];
+  let total = 0;
+  let paymentHistory = [];
+  let price = [];
+
+  searchInput.addEventListener("input", function (event) {
+    const searchTerm = event.target.value.toLowerCase();
+    const products = document.querySelectorAll(".product");
+
+    products.forEach(function (product) {
+      const productName = product.querySelector(".product-name").textContent.toLowerCase();
+      if (productName.includes(searchTerm)) {
+        product.style.display = "grid";
+      } else {
+        product.style.display = "none";
+      }
+    });
+  });
+
+  addToCartButtons.forEach(function (button) {
+    button.addEventListener("click", function () {
+      const product = button.parentNode;
+      const productName = product.querySelector(".product-name").textContent;
+      const productPrice = parseFloat(product.querySelector(".product-price").textContent.replace("₱", ""));
+      addToCart(productName, productPrice);
+      saveSessionData(); // Save session data after adding to cart
+    });
+  });
+
+  editButtons.forEach(function (button) {
+  button.addEventListener("click", function () {
+    savePayment(total, customerMoney, change);
+    saveSessionData(); // Save session data after calculating change
+    const product = button.parentNode;
+    const productName = product.querySelector(".product-name").textContent;
+    let productPrice = parseFloat(product.querySelector(".product-price").textContent.replace("₱", ""));
+
+    const newPrice = prompt("Enter the new price for " + productName, productPrice);
+    if (newPrice !== null && newPrice !== "") {
+      product.querySelector(".product-price").textContent = "₱" + parseFloat(newPrice).toFixed(2);
+
+      const cartItem = cart.find(item => item.name === productName);
+      if (cartItem) {
+        const priceDifference = parseFloat(newPrice) - productPrice;
+        total += priceDifference;
+        cartItem.price = parseFloat(newPrice);
+        cartTotal.textContent = total.toFixed(2);
+      }
+      savePayment(total, customerMoney, change);
+      saveSessionData(); // Save session data after calculating change
+    }
+  });
+});
+
+
+  calculateChangeButton.addEventListener("click", function () {
+    const customerMoney = parseFloat(customerMoneyInput.value);
+    const change = customerMoney - total;
+    if (change >= 0) {
+      changeLabel.textContent = "Change: ₱" + change.toFixed(2);
+      savePayment(total, customerMoney, change);
+      saveSessionData(); // Save session data after calculating change
+    } else {
+      changeLabel.textContent = "Insufficient money";
+    }
+  });
+
+  newTransactionButton.addEventListener("click", function () {
+    clearCart();
+    saveSessionData(); // Save session data after clearing the cart
+  });
+
+  printButton.addEventListener("click", function () {
+    printReceipt();
+  });
+
+  function printReceipt() {
+    const receiptContent = getReceiptContent();
+    const printWindow = window.open("", "_blank");
+    printWindow.document.write("<html><head><title>Receipt</title><style>" +
+      "body {" +
+      "  font-family: Arial, sans-serif;" +
+      "  margin: 0;" +
+      "  padding: 0;" +
+      "  display: flex;" +
+      "  justify-content: center;" +
+      "  align-items: center;" +
+      "  min-height: 100vh;" +
+      "}" +
+      ".receipt {" +
+      "  max-width: 400px;" +
+      "  background-color: #fff;" +
+      "  padding: 20px;" +
+      "  border-radius: 10px;" +
+      "  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);" +
+      "}" +
+      "h1 {" +
+      "  font-size: 24px;" +
+      "  margin-bottom: 20px;" +
+      "  text-align: center;" +
+      "}" +
+      "ul {" +
+      "  list-style-type: none;" +
+      "  padding: 0;" +
+      "  margin-bottom: 20px;" +
+      "}" +
+      "li {" +
+      "  margin-bottom: 5px;" +
+      "}" +
+      "p {" +
+      "  margin: 0;" +
+      "  line-height: 1.5;" +
+      "}" +
+      "</style></head><body>");
+    printWindow.document.write("<div class='receipt'>");
+    printWindow.document.write(receiptContent);
+    printWindow.document.write("</div></body></html>");
+    printWindow.document.close();
+    printWindow.print();
+  }
+
+  function getReceiptContent() {
+    let content = "<h1>Receipt</h1>";
+    content += "<ul>";
+    cart.forEach(function (item) {
+      content += "<li>" + item.name + " - ₱" + item.price.toFixed(2) + "</li>";
+    });
+    content += "</ul>";
+    content += "<p>Total: ₱" + total.toFixed(2) + "</p>";
+    content += "<p>Customer Money: ₱" + customerMoneyInput.value + "</p>";
+    content += "<p>Change: ₱" + getChange().toFixed(2) + "</p>";
+    return content;
+  }
+
+
+  function addToCart(name, price) {
+    const item = document.createElement("li");
+    item.textContent = name + " - ₱" + price.toFixed(2);
+    cartItems.appendChild(item);
+    cart.push({ name: name, price: price });
+    total += price;
+    cartTotal.textContent = total.toFixed(2);
+  }
+
+  function clearCart() {
+    cartItems.innerHTML = "";
+    cart = [];
+    total = 0;
+    cartTotal.textContent = total.toFixed(2);
+    customerMoneyInput.value = "";
+    changeLabel.textContent = "Change: ";
+  }
+
+  function savePayment(totalAmount, customerMoney, change) {
+    const payment = {
+      totalAmount: totalAmount.toFixed(2),
+      customerMoney: customerMoney.toFixed(2),
+      change: change.toFixed(2),
+      timestamp: new Date().toLocaleString()
+    };
+    paymentHistory.push(payment);
+  }
+
+  paymentH.addEventListener("click", function () {
+    displayPaymentHistory();
+  });
+
+  function displayPaymentHistory() {
+
+
+    const paymentHistoryContainer = document.createElement("div");
+    paymentHistoryContainer.classList.add("payment-history-container");
+    document.body.appendChild(paymentHistoryContainer);
+
+    const paymentHistoryTitle = document.createElement("h3");
+    paymentHistoryTitle.textContent = "Payment History";
+    paymentHistoryContainer.appendChild(paymentHistoryTitle);
+
+    if (paymentHistory.length === 0) {
+      const noPaymentsMessage = document.createElement("p");
+      noPaymentsMessage.textContent = "No payment history available";
+      paymentHistoryContainer.appendChild(noPaymentsMessage);
+    } else {
+      paymentHistory.forEach(function (payment) {
+        const paymentEntry = document.createElement("div");
+        paymentEntry.classList.add("payment-entry");
+        paymentHistoryContainer.appendChild(paymentEntry);
+
+        const paymentDetails = document.createElement("p");
+        paymentDetails.innerHTML = "<strong>Total Amount:</strong> ₱" + payment.totalAmount +
+          "<br><strong>Customer Money:</strong> ₱" + payment.customerMoney +
+          "<br><strong>Change:</strong> ₱" + payment.change +
+          "<br><strong>Timestamp:</strong> " + payment.timestamp;
+        paymentEntry.appendChild(paymentDetails);
+        // Get the close button element
+const closeButton = document.getElementById("close-button");
+
+  // Add an event listener to the close button for the click event
+  closeButton.addEventListener("click", function () {
+  // Find the payment history container element
+  const paymentHistoryContainer = document.querySelector(".payment-history-container");
+  
+  // Remove the payment history container from the DOM
+  if (paymentHistoryContainer) {
+    paymentHistoryContainer.remove();
+  }
+        });
+      });
+    }
+  }
+
+
+  
+
+  function getChange() {
+    const customerMoney = parseFloat(customerMoneyInput.value);
+    return customerMoney - total;
+  }
+
+  function saveSessionData() {
+    const sessionData = {
+      cart: cart,
+      total: total,
+      paymentHistory: paymentHistory
+    };
+    localStorage.setItem("sessionData", JSON.stringify(sessionData));
+    localStorage.setItem("products", JSON.stringify(products));
+  }
+
+
+
+  function loadSessionData() {
+    const sessionData = localStorage.getItem("sessionData");
+    if (sessionData) {
+      const parsedData = JSON.parse(sessionData);
+      cart = parsedData.cart;
+      total = parsedData.total;
+      paymentHistory = parsedData.paymentHistory;
+
+      cartItems.innerHTML = "";
+      cart.forEach(function (item) {
+        addToCart(item.name, item.price);
+      });
+
+// Update product prices in the DOM based on stored session data
+const products = document.querySelectorAll(".product");
+      products.forEach(function (product) {
+        const productName = product.querySelector(".product-name").textContent;
+        const cartItem = cart.find(item => item.name === productName);
+        if (cartItem) {
+          const productPriceElement = product.querySelector(".product-price");
+          const savedProducts = localStorage.getItem("products");
+          const productsArray = savedProducts ? JSON.parse(savedProducts) : [];
+          const savedProduct = productsArray.find(prod => prod.name === productName);
+          if (savedProduct) {
+            productPriceElement.textContent = "₱" + savedProduct.price.toFixed(2);
+            cartItem.price = savedProduct.price;
+            total += savedProduct.price;
+            cartTotal.textContent = total.toFixed(2);
+          }
+        }
+      });
+    }
+  }
+
+  loadSessionData();
+
+  function savePrices() {
+      localStorage.setItem('products', JSON.stringify(products));
+    }
+
+      // Function to load product prices from localStorage
+      function loadPrices() {
+    const savedProducts = localStorage.getItem("products");
+    if (savedProducts) {
+      products = JSON.parse(savedProducts);
+      renderProducts(products);
+    }
+  }
+
+    window.onload = function() {
+      loadPrices();
+      calculateCartTotal();
+    };
+
+    function renderProducts(products) {
+    const productElements = document.querySelectorAll(".product");
+    productElements.forEach(function (productElement, index) {
+      const product = products[index];
+      const productNameElement = productElement.querySelector(".product-name");
+      const productPriceElement = productElement.querySelector(".product-price");
+
+      productNameElement.textContent = product.name;
+      productPriceElement.textContent = "₱" + product.price.toFixed(2);
+
+      // Add event listener to edit button
+      const editButton = productElement.querySelector(".edit-price");
+      editButton.addEventListener("click", function () {
+        const newPrice = prompt("Enter the new price for " + product.name, product.price);
+        if (newPrice !== null && newPrice !== "") {
+          const newPriceFloat = parseFloat(newPrice);
+          if (!isNaN(newPriceFloat) && newPriceFloat >= 0) {
+            product.price = newPriceFloat;
+            productPriceElement.textContent = "₱" + newPriceFloat.toFixed(2);
+            savePrices();
+            updateCartItemPrice(product.name, product.price);
+            calculateCartTotal();
+          } else {
+            alert("Invalid price. Please enter a valid number.");
+          }
+        }
+      });
+    });
+  }
+  
+
+  function updateCartItemPrice(name, oldPrice, newPrice) {
+    const cartItem = cart.find(item => item.name === name);
+    if (cartItem) {
+      total = total - oldPrice + newPrice;
+      cartTotal.textContent = total.toFixed(2);
+      cartItem.price = newPrice;
+      cartItems.innerHTML = "";
+      cart.forEach(item => {
+        const cartItemElement = document.createElement("li");
+        cartItemElement.textContent = `${item.name} - ₱${item.price.toFixed(2)}`;
+        cartItems.appendChild(cartItemElement);
+      });
+    }
+  }
+});
+
+</script>
+</body>
+</html>
